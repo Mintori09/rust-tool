@@ -1,0 +1,18 @@
+[package]
+name = "Rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arc = "0.0.1"
+epub = "2.1.2"
+epub-builder = "0.8.0"
+html5ever = "0.30.0"
+markup5ever = "0.15.0"
+prettyplease = "0.2.31"
+regex = "1.11.1"
+reqwest = "0.12.15"
+scraper = "0.23.1"
+serde = "1.0.219"
+syn = "2.0.100"
+tokio = { version=  "1.44.1",  features = ["rt-multi-thread", "macros"]}
