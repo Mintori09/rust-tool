@@ -3,7 +3,7 @@ use regex::Regex;
 use scraper::{Html, Selector};
 use std::fs::File;
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn get_title(url: &str) -> String {
     let re = Regex::new(r"https://www\.sanfoundry\.com/([^/]+)/").unwrap();
@@ -45,7 +45,7 @@ fn get_content(content: &str) -> String {
     clean_text(&text)
 }
 
-fn save_to_path(path: &PathBuf, content: &str) -> anyhow::Result<()> {
+fn save_to_path(path: &Path, content: &str) -> anyhow::Result<()> {
     let mut file = File::create(path)?;
     file.write_all(content.as_bytes())?;
     Ok(())
@@ -91,7 +91,7 @@ pub fn fetch_data(url: &str) -> anyhow::Result<String> {
     tab.navigate_to(url)?;
     tab.wait_until_navigated()?;
 
-    let content = tab.get_content()?;
+    let content = tab.get_content().unwrap_or_default();
     Ok(content)
 }
 
@@ -99,8 +99,7 @@ pub fn fetch_data(url: &str) -> anyhow::Result<String> {
 pub fn scrap(url: &str, mut path: PathBuf) -> anyhow::Result<()> {
     path.push(get_title(url));
 
-    let content = fetch_data(url).unwrap_or_default();
-    let text = fetch_data(&content).unwrap_or_default();
+    let text = get_content(&fetch_data(url).unwrap_or_default());
 
     match save_to_path(&path, &text) {
         Ok(()) => {
